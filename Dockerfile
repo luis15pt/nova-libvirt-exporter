@@ -1,5 +1,9 @@
 FROM python:3.8-slim
 
+# Build argument for libvirt GID with a default
+ARG LIBVIRT_GID=2222
+#Ubuntu: typically 107 or 2222, CentOS/RHEL: typically 993, Debian: typically 107
+
 # Install libvirt dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -7,6 +11,7 @@ RUN apt-get update && \
     pkg-config \
     gcc \
     python3-dev \
+    gosu \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
@@ -21,8 +26,10 @@ COPY setup.py .
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir .
 
-# Expose Prometheus metrics port
-EXPOSE 9179
+# Add startup script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Run the exporter
+EXPOSE 9179
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["python", "-m", "nova_libvirt_exporter.exporter"]
