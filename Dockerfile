@@ -10,7 +10,7 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 # Create libvirt group with fixed GID 2222
-RUN groupadd -g 2222 libvirt
+#RUN groupadd -g 2222 libvirt
 
 # Set working directory
 WORKDIR /app
@@ -25,7 +25,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir .
 
 # Add runtime user and add to libvirt group
-RUN useradd -r -g libvirt exporter
+#RUN useradd -r -g libvirt exporter
 
 # Switch to non-root user
 USER exporter
