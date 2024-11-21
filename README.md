@@ -1,21 +1,21 @@
 # Nova Libvirt Exporter
 
-A Prometheus exporter for OpenStack Nova instances using libvirt. This exporter provides detailed metrics about your Nova instances, including CPU, memory, network, disk, and PCI device information.
+A Prometheus exporter that provides detailed metrics from OpenStack Nova instances using libvirt. Monitor your virtual machines with comprehensive metrics about CPU, memory, network, disk, and PCI device information.
 
 ## Features
 
 - Complete Nova instance metadata export
-- CPU topology and configuration metrics
-- Memory usage and balloon device metrics
-- Network interface and IP address information
-- Disk and storage metrics
-- PCI device mapping and configuration
-- Graphics and console configuration
-- System and OS information
+- Detailed CPU topology and usage metrics
+- Memory allocation and balloon device tracking
+- Network interface and IP configuration monitoring
+- Storage and disk performance metrics
+- PCI device mapping and passthrough monitoring
+- Graphics and console configuration tracking
+- System and OS information collection
 
 ## Quick Start
 
-### Using Docker
+### Docker
 
 ```bash
 docker run -d \
@@ -23,51 +23,28 @@ docker run -d \
   -p 9179:9179 \
   -v /var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock \
   --privileged \
-  yourdockerhub/nova-libvirt-exporter
+  sarabando/nova-libvirt-exporter
 ```
 
-### Using Docker Compose
+### Docker Compose
 
-```bash
-git clone https://github.com/yourusername/nova-libvirt-exporter
-cd nova-libvirt-exporter
-docker-compose up -d
+```yaml
+version: '3'
+services:
+  exporter:
+    image: sarabando/nova-libvirt-exporter
+    ports:
+      - "9179:9179"
+    volumes:
+      - /var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock
+    privileged: true
 ```
-
-### Manual Installation
-
-1. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-2. Install the package:
-```bash
-pip install .
-```
-
-3. Run the exporter:
-```bash
-nova-libvirt-exporter
-```
-
-## Metrics
-
-The exporter provides the following metrics:
-
-- `nova_instance_metadata` - Basic instance information
-- `nova_flavor_metadata` - Instance flavor details
-- `nova_instance_cpu_topology` - CPU configuration
-- `nova_instance_memory_kib` - Memory allocation
-- `nova_instance_network` - Network interface details
-- `nova_instance_pci_device` - PCI device mapping
-- And many more...
 
 ## Configuration
 
-### Prometheus Configuration
+### Prometheus
 
-Add the following to your `prometheus.yml`:
+Add to your `prometheus.yml`:
 
 ```yaml
 scrape_configs:
@@ -76,22 +53,56 @@ scrape_configs:
       - targets: ['localhost:9179']
 ```
 
-### Grafana Dashboard
+## Available Metrics
 
-A sample Grafana dashboard is provided in `examples/grafana-dashboard.json`.
+### Instance Metadata
+- `nova_instance_metadata` - Basic instance information
+- `nova_flavor_metadata` - Instance flavor details
+- `nova_owner_metadata` - Instance ownership information
+
+### System Metrics
+- `nova_instance_memory_kib` - Memory allocation
+- `nova_instance_vcpus` - vCPU allocation
+- `nova_instance_cpu_shares` - CPU share allocation
+- `nova_instance_cpu_topology` - CPU topology details
+
+### Hardware Metrics
+- `nova_instance_network` - Network interface configuration
+- `nova_instance_disk` - Disk configuration
+- `nova_instance_pci_device` - PCI device mapping
+- `nova_instance_graphics` - Graphics configuration
+- `nova_instance_memballoon` - Memory balloon device information
+
+### Additional Information
+- `nova_instance_sysinfo` - System information
+- `nova_instance_os` - Operating system details
+- `nova_instance_features` - Enabled features
+- `nova_instance_console` - Console configuration
 
 ## Development
 
-### Building the Docker Image
+### Prerequisites
+- Python 3.8+
+- libvirt-dev
+- pkg-config
+
+### Local Setup
 
 ```bash
-docker build -t nova-libvirt-exporter .
+# Install dependencies
+pip install -r requirements.txt
+
+# Install package
+pip install -e .
+
+# Run exporter
+nova-libvirt-exporter
 ```
 
-### Running Tests
+### Building
 
 ```bash
-python -m pytest tests/
+docker build -t sarabando/nova-libvirt-exporter .
 ```
 
 ## License
