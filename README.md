@@ -13,8 +13,6 @@ A Prometheus exporter that provides detailed metrics from OpenStack Nova instanc
 - Graphics and console configuration tracking
 - System and OS information collection
 
-## Note
-The Docker image assumes a libvirt group GID of 2222. If your system uses a different GID, you may need to rebuild the image with the appropriate GID.
 
 ## Quick Start
 
