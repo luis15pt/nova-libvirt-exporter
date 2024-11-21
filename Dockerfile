@@ -28,7 +28,7 @@ RUN pip install --no-cache-dir .
 #RUN useradd -r -g libvirt exporter
 
 # Switch to non-root user
-USER exporter
+#USER exporter
 
 EXPOSE 9179
 CMD ["python", "-m", "nova_libvirt_exporter.exporter"]
